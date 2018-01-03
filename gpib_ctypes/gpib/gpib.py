@@ -407,7 +407,7 @@ def serial_poll(handle):
     if sta & ERR:
         raise GpibError("serial_poll")
 
-    return status.value
+    return int(status.value[0])
 
 
 def spoll_bytes(handle):
