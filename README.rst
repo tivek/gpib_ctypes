@@ -18,13 +18,7 @@ gpib-ctypes
      :alt: Updates
 
 
-GPIB interface for Python implemented using ctypes.
-
-API-compatible with the Python bindings for linux-gpib.
-
-Currently tested on NI GPIB on Microsoft Windows. Testers on Linux and
-Windows needed and welcome!
-
+Cross-platform Python bindings for the NI GPIB and linux-gpib C interfaces.
 
 * Free software: GNU General Public License v2
 * Documentation: https://gpib-ctypes.readthedocs.io.
@@ -33,7 +27,19 @@ Windows needed and welcome!
 Features
 --------
 
-* TODO
+* cross-platform: tested on Microsoft Windows and Linux
+* API-compatible with the linux-gpib Python bindings
+* no Python dependencies except the standard library
+
+Testing
+---------
+
+Currently tested with:
+* NI GPIB-USB-HI, Microsoft Windows 7 32-bit, NI GPIB driver version 3.1.0.49154, 
+* NI GPIB-USB-HI, Arch Linux 64-bit current, linux-gpib 4.1.0
+
+More testers welcome with different hardware and OS configurations!
+
 
 Credits
 ---------
