@@ -11,6 +11,16 @@ from .constants import *
 _lib = None
 
 def _load_lib(filename=None):
+    """Attempt to load the GPIB library from the given filename.
+    If filename is ommitted, try several likely paths.
+        
+    Args:
+        filename (str): path to GPIB library, default None
+    
+    Returns:
+        bool: library found and loaded
+    """
+    
     global _lib
     _lib = None
     
@@ -40,7 +50,7 @@ def _load_lib(filename=None):
         # GPIB installed.
         import warnings
         warnings.warn("GPIB library not found. Please manually load it using _load_lib(filename). "
-                      "All loaded functions will fail until the library is  manually loaded.")
+                      "All loaded functions will fail until the library is manually loaded.")
         
         class MockGPIB(dict):
             def __getattr__(self, n):
@@ -116,6 +126,7 @@ def _load_lib(filename=None):
         setattr(_lib, "getiberr", lambda: ctypes.c_int.in_dll(_lib, "iberr"))
 
     return True
+
 
 _load_lib()
     
