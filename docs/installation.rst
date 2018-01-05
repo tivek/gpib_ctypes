@@ -8,6 +8,8 @@ Installation
 Stable release
 --------------
 
+TO DO: we still do not have a stable release on pypi
+
 To install gpib-ctypes, run this command in your terminal:
 
 .. code-block:: console
