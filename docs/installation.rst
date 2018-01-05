@@ -28,7 +28,14 @@ From sources
 
 The sources for gpib-ctypes can be downloaded from the `Github repo`_.
 
-You can either clone the public repository:
+You can install directly from the repo using pip:
+
+.. code-block:: console
+
+    $ pip install git+https://github.com/tivek/gpib_ctypes
+
+
+Alternatively, install from a local copy of the source. You can either clone the public repository:
 
 .. code-block:: console
 
