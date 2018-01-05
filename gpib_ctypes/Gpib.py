@@ -22,6 +22,15 @@ class Gpib(object):
 
     def __init__(self, name = 'gpib0', pad = None, sad = 0, timeout = 13, send_eoi = 1, eos_mode = 0):
         self._own = False
+        self._open_params = (name, pad, sad, timeout, send_eoi, eos_mode)
+        self._open()
+    
+    def _open(self):
+        if self._own:
+            return
+        
+        name, pad, sad, timeout, send_eoi, eos_mode = self._open_params
+        
         if isinstance(name, str):
             self.id = gpib.find(name)
             self._own = True
@@ -30,12 +39,24 @@ class Gpib(object):
         else:
             self.id = gpib.dev(name, pad, sad, timeout, send_eoi, eos_mode)
             self._own = True
+    
+    def _close(self):
+        if self._own:
+            gpib.close(self.id)
+        self._own = False
 
     # automatically close descriptor when instance is deleted
     def __del__(self):
-        if self._own:
-            gpib.close(self.id)
-
+        self._close()
+    
+    # context manager protocol
+    def __enter__(self):
+        self._open()
+    
+    def __exit__(self, *args):
+        self._close()
+    
+    
     def __repr__(self):
         return "%s(%d)" % (self.__class__.__name__, self.id)
 
