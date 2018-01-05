@@ -34,4 +34,5 @@ from .gpib import \
     wait,\
     write,\
     write_async,\
-    GpibError
+    GpibError,\
+    _load_lib
