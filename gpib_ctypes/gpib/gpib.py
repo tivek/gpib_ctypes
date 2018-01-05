@@ -137,7 +137,7 @@ class GpibError(Exception):
        GpibError(gpib_function_name)
     """
     
-    explanation = {
+    _explanation = {
         EDVR: "system error",
         ECIC: "not CIC",
         ENOL: "no listener",
@@ -170,7 +170,7 @@ class GpibError(Exception):
             message = "{:s}() error: Errno {:d}, {:s}".format(funcname, self.sverrno, os.strerror(self.sverrno))
         else:
             try:
-                expl = GpibError.explanation[self.code]
+                expl = GpibError._explanation[self.code]
             except KeyError:
                 expl = "unknown error"
             message = "{:s}() error: Iberr {:d}, {:s}".format(funcname, self.code, expl)
