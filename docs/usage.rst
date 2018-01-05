@@ -8,7 +8,11 @@ To use ``gpib-ctypes`` in a project, import all submodules at once::
 
 ... or import ``gpib`` and ``Gpib`` submodules separately as below.
 
-Handle-level GPIB API::
+------------------
+Handle-level GPIB API
+------------------
+
+::
 
     # Identify instrument at board 0, primary address 23.
     
@@ -24,8 +28,11 @@ Handle-level GPIB API::
         # do something with err.code
         pass
 
+---------------------
+Object-oriented GPIB API
+---------------------
 
-Object-oriented GPIB API::
+::
 
     # Identify instrument at board 0, primary address 23.
     
@@ -41,7 +48,11 @@ Object-oriented GPIB API::
         # do something with err.code
         pass
 
-Example use with ``pyvisa`` and the pure Python backend ``pyvisa-py``::
+--------------------------------------------------------------
+Example usage with ``pyvisa`` and the pure Python backend ``pyvisa-py``
+--------------------------------------------------------------
+
+::
 
     # pyvisa-py will try to load the root-level gpib module, eg. from the linux-gpib project.
     # To make pyvisa-py use gpib_ctypes.gpib instead, monkey patch it by calling gpib_ctypes.make_default_gpib().
