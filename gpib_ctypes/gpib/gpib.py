@@ -49,15 +49,16 @@ def _load_lib(filename=None):
         # This is necessary for eg. docs generators to work without having
         # GPIB installed.
         import warnings
-        warnings.warn("GPIB library not found. Please manually load it using _load_lib(filename). "
-                      "All loaded functions will fail until the library is manually loaded.")
+        message = "GPIB library not found. Please manually load it using _load_lib(filename). All GPIB functions will raise OSError until the library is manually loaded."
+        warnings.warn(message)
         
-        class MockGPIB(dict):
+        class MockGPIB(object):
             def __getattr__(self, n):
-                raise OSError("GPIB library not found.")
+                def f(*args):
+                    raise OSError(message)
+                return f
         
         _lib = MockGPIB()
-        
         return False
 
     # prepare ctypes bindings
