@@ -27,7 +27,7 @@ test_requirements = [
 
 setup(
     name='gpib_ctypes',
-    version='0.1.0dev',
+    version='0.1.0',
     description="GPIB interface for Python implemented using ctypes, API-compatible with linux-gpib.",
     long_description=readme + '\n\n' + history,
     author="Tomislav Ivek",
@@ -36,11 +36,11 @@ setup(
     packages=find_packages(exclude=['tests', 'test']),
     include_package_data=True,
     install_requires=requirements,
-    license="GNU General Public License v3",
+    license="GNU General Public License v2",
     zip_safe=False,
     keywords='gpib_ctypes',
     classifiers=[
-        'Development Status :: 2 - Pre-Alpha',
+        'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: GNU General Public License v2 (GPLv2)',
         'Natural Language :: English',
