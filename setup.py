@@ -27,7 +27,7 @@ test_requirements = [
 
 setup(
     name='gpib_ctypes',
-    version='0.1.0',
+    version='0.1.1',
     description="GPIB interface for Python implemented using ctypes, API-compatible with linux-gpib.",
     long_description=readme + '\n\n' + history,
     author="Tomislav Ivek",
@@ -52,6 +52,7 @@ setup(
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
     ],
     test_suite='tests',
     tests_require=test_requirements,
