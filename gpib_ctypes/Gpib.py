@@ -33,11 +33,15 @@ class Gpib(object):
 
     # automatically close descriptor when instance is deleted
     def __del__(self):
-        if self._own:
-            gpib.close(self.id)
+        self.close()
 
     def __repr__(self):
         return "%s(%d)" % (self.__class__.__name__, self.id)
+
+    def close(self):
+        if self._own:
+            gpib.close(self.id)
+            self._own = False
 
     def command(self, str):
         gpib.command(self.id, str)
