@@ -10,20 +10,21 @@ from .constants import *
 # load the GPIB dynamic library using ctypes
 _lib = None
 
+
 def _load_lib(filename=None):
     """Attempt to load the GPIB library from the given filename.
     If filename is ommitted, try several likely paths.
-        
+
     Args:
         filename (str): path to GPIB library, default None
-    
+
     Returns:
         bool: library found and loaded
     """
-    
+
     global _lib
     _lib = None
-    
+
     if platform.system() == "Windows":
         libnames = [filename] if filename else \
                    ['gpib-32.dll',
@@ -51,24 +52,27 @@ def _load_lib(filename=None):
         import warnings
         message = "GPIB library not found. Please manually load it using _load_lib(filename). All GPIB functions will raise OSError until the library is manually loaded."
         warnings.warn(message)
-        
+
         class MockGPIB(object):
             def __getattr__(self, n):
                 def f(*args):
                     raise OSError(message)
                 return f
-        
+
         _lib = MockGPIB()
         return False
 
     # prepare ctypes bindings
     for name, argtypes, restype in (
-        ("ibask", [ctypes.c_int, ctypes.c_int, ctypes.POINTER(ctypes.c_int)], ctypes.c_int),
+        ("ibask", [ctypes.c_int, ctypes.c_int,
+                   ctypes.POINTER(ctypes.c_int)], ctypes.c_int),
         ("ibclr", [ctypes.c_int], ctypes.c_int),
         ("ibcmd", [ctypes.c_int, ctypes.c_char_p, ctypes.c_long], ctypes.c_int),
         ("ibconfig", [ctypes.c_int, ctypes.c_int, ctypes.c_int], ctypes.c_int),
-        ("ibdev", [ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_int], ctypes.c_int),
-        ("ibln", [ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.POINTER(ctypes.c_short)], ctypes.c_int),
+        ("ibdev", [ctypes.c_int, ctypes.c_int, ctypes.c_int,
+                   ctypes.c_int, ctypes.c_int, ctypes.c_int], ctypes.c_int),
+        ("ibln", [ctypes.c_int, ctypes.c_int, ctypes.c_int,
+                  ctypes.POINTER(ctypes.c_short)], ctypes.c_int),
         ("ibloc", [ctypes.c_int], ctypes.c_int),
         ("ibonl", [ctypes.c_int, ctypes.c_int], ctypes.c_int),
         ("ibrd", [ctypes.c_int, ctypes.c_char_p, ctypes.c_long], ctypes.c_int),
@@ -78,9 +82,10 @@ def _load_lib(filename=None):
         ("ibtmo", [ctypes.c_int, ctypes.c_int], ctypes.c_int),
         ("ibtrg", [ctypes.c_int], ctypes.c_int),
         ("ibwait", [ctypes.c_int, ctypes.c_int], ctypes.c_int),
-        ("ibwrta", [ctypes.c_int, ctypes.c_char_p, ctypes.c_long], ctypes.c_int),
+        ("ibwrta", [ctypes.c_int, ctypes.c_char_p,
+                    ctypes.c_long], ctypes.c_int),
         ("ibwrt", [ctypes.c_int, ctypes.c_char_p, ctypes.c_long], ctypes.c_int)
-    ): 
+    ):
         libfunction = _lib[name]
         libfunction.argtypes = argtypes
         libfunction.restype = restype
@@ -102,12 +107,14 @@ def _load_lib(filename=None):
         # some Windows GPIB libraries do not provide ibsp
         # but maybe it is not needed, so gently warn the user it is missing
         import warnings
-        message = "{:s} does not implement ibspb() on this platform.".format(_lib._name)
+        message = "{:s} does not implement ibspb() on this platform.".format(
+            _lib._name)
         warnings.warn(message, ImportWarning)
+
         def _ibspb(*args):
             raise NotImplementedError(message)
         setattr(_lib, "ibspb", _ibspb)
-        
+
     try:
         _lib.ThreadIbsta.restype = ctypes.c_int
         setattr(_lib, "getibsta", _lib.ThreadIbsta)
@@ -130,13 +137,13 @@ def _load_lib(filename=None):
 
 
 _load_lib()
-    
+
 
 class GpibError(Exception):
     """Exception class with helpful GPIB error messages
        GpibError(gpib_function_name)
     """
-    
+
     _explanation = {
         EDVR: "system error",
         ECIC: "not CIC",
@@ -161,30 +168,33 @@ class GpibError(Exception):
         ERST: "event notification cancelled due to reset",
         EPWR: "interface lost power"
     }
+
     def __init__(self, funcname):
         self.code = _lib.getiberr()
         self.sverrno = None
 
         if self.code in (EDVR, EFSO):
             self.sverrno = ibcnt()
-            message = "{:s}() error: Errno {:d}, {:s}".format(funcname, self.sverrno, os.strerror(self.sverrno))
+            message = "{:s}() error: Errno {:d}, {:s}".format(
+                funcname, self.sverrno, os.strerror(self.sverrno))
         else:
             try:
                 expl = GpibError._explanation[self.code]
             except KeyError:
                 expl = "unknown error"
-            message = "{:s}() error: Iberr {:d}, {:s}".format(funcname, self.code, expl)
+            message = "{:s}() error: Iberr {:d}, {:s}".format(
+                funcname, self.code, expl)
 
         super(GpibError, self).__init__(message)
 
 
 def ask(handle, conf):
     """Query configuration by calling ibask.
-    
+
     Args:
         handle (int): board or device handle
         conf (int): gpib.Iba* constant designating configuration settings
-        
+
     Returns:
         int: configuration setting value
     """
@@ -200,10 +210,10 @@ def ask(handle, conf):
 
 def clear(handle):
     """Clear device by calling ibclr.
-    
+
     Args:
         handle (int): device handle
-        
+
     Returns:
         int: ibsta value
     """
@@ -217,10 +227,10 @@ def clear(handle):
 
 def close(handle):
     """Close board or device handle by calling ibonl.
-    
+
     Args:
         handle (int): board or device handle to close
-        
+
     Returns:
         int: ibsta value
     """
@@ -234,11 +244,11 @@ def close(handle):
 
 def command(handle, cmd):
     """Write command bytes by calling ibcmd.
-    
+
     Args:
         handle (int): board handle
         cmd (bytes): sequence of bytes to write
-        
+
     Returns:
         int: ibsta value
     """
@@ -252,12 +262,12 @@ def command(handle, cmd):
 
 def config(handle, conf, value):
     """Change configuration by calling ibconfig.
-    
+
     Args:
         handle (int): board or device handle
         conf (int): gpib.Ibc* constant designating configuration settings
         value (int): configuration setting value
-        
+
     Returns:
         int: ibsta value
     """
@@ -271,7 +281,7 @@ def config(handle, conf, value):
 
 def dev(board, pad, sad=NO_SAD, tmo=T30s, sendeoi=1, eos=0):
     """Get a device handle by calling ibdev.
-    
+
     Args:
         board (int): board number
         pad (int): primary address
@@ -279,7 +289,7 @@ def dev(board, pad, sad=NO_SAD, tmo=T30s, sendeoi=1, eos=0):
         tmo (int): timeout constant, default gpib.T30s
         sendeoi (int): assert EOI on write, default 1
         eos (int): end-of-string termination, default 0
-        
+
     Returns:
         int: board or device handle
     """
@@ -293,10 +303,10 @@ def dev(board, pad, sad=NO_SAD, tmo=T30s, sendeoi=1, eos=0):
 def find(name):
     """Get a device handle based on a name from configuration file
     by calling ibfind.
-    
+
     Args:
         name (string)
-        
+
     Returns:
         int: board or device handle
     """
@@ -308,10 +318,10 @@ def find(name):
 
 def ibcnt():
     """Get number of transferred bytes by calling ThreadIbcntl or reading ibcnt.
-    
+
     Args:
         none
-    
+
     Returns:
         int: number of transferred bytes
     """
@@ -324,7 +334,7 @@ def ibloc(handle):
 
     Args:
         handle (int): device handle
-        
+
     Returns:
         int: ibsta value
     """
@@ -338,10 +348,10 @@ def ibloc(handle):
 
 def ibsta():
     """Get status value by calling ThreadIbsta or reading ibsta.
-    
+
     Args:
         none
-    
+
     Returns:
         int: ibsta value
     """
@@ -351,10 +361,10 @@ def ibsta():
 
 def interface_clear(handle):
     """Clear interface by calling ibsic.
-    
+
     Args:
         handle (int): board handle
-        
+
     Returns:
         int: ibsta value
     """
@@ -368,12 +378,12 @@ def interface_clear(handle):
 
 def listener(board, pad, sad=NO_SAD):
     """Check if listener is present at address by calling ibln.
-    
+
     Args:
         board (int): board or device handle, or board number
         pad (int): primary address
         sad (int): secondary address, default gpib.NO_SAD
-        
+
     Returns:
         bool: True if listener is present, False otherwise
     """
@@ -389,11 +399,11 @@ def listener(board, pad, sad=NO_SAD):
 
 def read(handle, length):
     """Read a number of data bytes by calling ibread.
-    
+
     Args:
         handle (int): board or device handle
         length (int): number of bytes to read
-        
+
     Returns:
         bytes: sequence of bytes which was read
     """
@@ -409,11 +419,11 @@ def read(handle, length):
 
 def remote_enable(handle, enable):
     """Set remote enable by calling ibsre.
-    
+
     Args:
         handle (int): board handle
         enable (int): if non-zero, set remote enable
-        
+
     Returns:
         int: ibsta value
     """
@@ -427,10 +437,10 @@ def remote_enable(handle, enable):
 
 def serial_poll(handle):
     """Read status byte by calling ibrsp.
-    
+
     Args:
         handle (int): device handle
-        
+
     Returns:
         int: serial poll status byte
     """
@@ -446,10 +456,10 @@ def serial_poll(handle):
 
 def spoll_bytes(handle):
     """Get length of status byte queue by calling ibspb.
-    
+
     Args:
         handle (int): device handle
-    
+
     Returns:
         int: status byte queue length
     """
@@ -465,11 +475,11 @@ def spoll_bytes(handle):
 
 def timeout(handle, t):
     """Set IO timeout by calling ibtmo.
-    
+
     Args:
         handle (int): board or device handle
         t (int): timeout, one of constants from gpib.TNONE to gpib.T100s
-    
+
     Returns:
         int: ibsta value
     """
@@ -483,10 +493,10 @@ def timeout(handle, t):
 
 def trigger(handle):
     """Trigger device by calling ibtrg.
-    
+
     Args:
         handle (int): device handle
-    
+
     Returns:
         int: ibsta value
     """
@@ -500,10 +510,10 @@ def trigger(handle):
 
 def version():
     """Get the GPIB library version. Not implemented on Windows.  
-     
+
     Args:
         none
-    
+
     Returns:
         str: GPIB library version
     """
@@ -516,14 +526,13 @@ def version():
         return None
 
 
-    
 def wait(handle, eventmask):
     """Wait for event by calling ibwait.
-    
+
     Args:
         handle (int): board or device handle
         eventmask (int): ibsta bits designating events to wait for
-    
+
     Returns:
         int: ibsta value
     """
@@ -541,7 +550,7 @@ def write(handle, data):
     Args:
         handle (int): board or device handle
         data (bytes): sequence of bytes to write
-        
+
     Returns:
         int: ibsta value
     """
@@ -559,7 +568,7 @@ def write_async(handle, data):
     Args:
         handle (int): board or device handle
         data (bytes): sequence of bytes to write
-        
+
     Returns:
         int: ibsta value
     """
