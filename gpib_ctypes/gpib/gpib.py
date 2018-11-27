@@ -310,7 +310,7 @@ def find(name):
     Returns:
         int: board or device handle
     """
-    ud = _lib.ibfind(name)
+    ud = _lib.ibfind(name.encode("ascii"))
     if ud < 0:
         raise GpibError("find")
     return ud
