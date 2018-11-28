@@ -92,8 +92,10 @@ def _load_lib(filename=None):
 
     # implementation-specific special cases
     try:
-        _lib.ibfind.argtypes = [ctypes.c_char_p]
-        _lib.ibfind.restype = ctypes.c_int
+        _old_ibfind = _lib.ibfind
+        _old_ibfind.argtypes = [ctypes.c_char_p]
+        _old_ibfind.restype = ctypes.c_int
+        setattr(_lib, "ibfind", lambda name: _old_ibfind(name.encode('ascii')))
     except AttributeError:
         # Windows Unicode version ibfindW
         _lib.ibfindW.argtypes = [ctypes.c_wchar_p]
@@ -310,7 +312,7 @@ def find(name):
     Returns:
         int: board or device handle
     """
-    ud = _lib.ibfind(name.encode("ascii"))
+    ud = _lib.ibfind(name)
     if ud < 0:
         raise GpibError("find")
     return ud
