@@ -23,6 +23,7 @@ from .gpib import \
     ibloc,\
     ibsta,\
     interface_clear,\
+    lines,\
     listener,\
     read,\
     remote_enable,\
