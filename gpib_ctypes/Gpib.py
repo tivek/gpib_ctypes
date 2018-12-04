@@ -67,6 +67,10 @@ class Gpib(object):
         self.res = gpib.listener(self.id, pad, sad)
         return self.res
 
+    def lines(self):
+        self.res = gpib.lines(self.id)
+        return self.res
+
     def ask(self, option):
         self.res = gpib.ask(self.id, option)
         return self.res

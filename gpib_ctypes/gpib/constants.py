@@ -112,6 +112,25 @@ TIMO = 0x4000     # timeout
 ERR = 0x8000      # error
 
 
+# lines (iblines) return values
+ValidDAV = 0x1    # the BusDAV bit is valid
+ValidNDAC = 0x2   # the BusNDAC bit is valid
+ValidNRFD = 0x4   # the BusNRFD bit is valid
+ValidIFC = 0x8    # the BusIFC bit is valid
+ValidREN = 0x10   # the BusREN bit is valid
+ValidSRQ = 0x20   # the BusSRQ bit is valid
+ValidATN = 0x40   # the BusATN bit is valid
+ValidEOI = 0x80   # the BusEOI bit is valid
+BusDAV = 0x100    # DAV line is asserted
+BusNDAC = 0x200   # NDAC line is asserted
+BusNRFD = 0x400   # NRFD line is asserted
+BusIFC = 0x800    # IFC line is asserted
+BusREN = 0x1000   # REN line is asserted
+BusSRQ = 0x2000   # SRQ line is asserted
+BusATN = 0x4000   # ATN line is asserted
+BusEOI = 0x8000   # EOI line is asserted
+
+
 # SAD special address
 NO_SAD = 0
 ALL_SAD = -1

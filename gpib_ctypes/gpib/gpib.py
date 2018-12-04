@@ -84,7 +84,9 @@ def _load_lib(filename=None):
         ("ibwait", [ctypes.c_int, ctypes.c_int], ctypes.c_int),
         ("ibwrta", [ctypes.c_int, ctypes.c_char_p,
                     ctypes.c_long], ctypes.c_int),
-        ("ibwrt", [ctypes.c_int, ctypes.c_char_p, ctypes.c_long], ctypes.c_int)
+        ("ibwrt", [ctypes.c_int, ctypes.c_char_p, ctypes.c_long], ctypes.c_int),
+        ("iblines", [ctypes.c_int, ctypes.POINTER(
+            ctypes.c_short)], ctypes.c_int)
     ):
         libfunction = _lib[name]
         libfunction.argtypes = argtypes
@@ -376,6 +378,26 @@ def interface_clear(handle):
         raise GpibError("interface_clear")
 
     return sta
+
+
+def lines(board):
+    """Obtain the status of the control and handshaking bus
+    lines of the bus.
+
+    Args:
+        board (int): board handle
+
+    Returns:
+        int: line capability and status bits
+    """
+
+    result = ctypes.c_short()
+
+    sta = _lib.iblines(board, ctypes.byref(result))
+    if sta & ERR:
+        raise GpibError("lines")
+
+    return result
 
 
 def listener(board, pad, sad=NO_SAD):
