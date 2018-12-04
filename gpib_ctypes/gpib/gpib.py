@@ -397,7 +397,7 @@ def lines(board):
     if sta & ERR:
         raise GpibError("lines")
 
-    return result
+    return result.value
 
 
 def listener(board, pad, sad=NO_SAD):
