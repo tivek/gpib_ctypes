@@ -2,6 +2,11 @@
 History
 =======
 
+0.3.0 (2018-12-13)
+------------------
+* Provide bindings to iblines through gpib.lines and Gpib.lines
+
+
 0.2.1 (2018-11-28)
 ------------------
 
