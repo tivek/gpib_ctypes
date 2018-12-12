@@ -27,7 +27,7 @@ test_requirements = [
 
 setup(
     name='gpib_ctypes',
-    version='0.2.1',
+    version='0.3.0',
     description="GPIB interface for Python implemented using ctypes, API-compatible with linux-gpib.",
     long_description=readme + '\n\n' + history,
     author="Tomislav Ivek",
