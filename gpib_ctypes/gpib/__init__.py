@@ -19,8 +19,11 @@ from .gpib import \
     config,\
     dev,\
     find,\
+    ibcac,\
     ibcnt,\
+    ibgts,\
     ibloc,\
+    ibpct,\
     ibsta,\
     interface_clear,\
     lines,\

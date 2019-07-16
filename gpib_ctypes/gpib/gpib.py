@@ -35,7 +35,7 @@ def _load_lib(filename=None):
         loader = ctypes.windll.LoadLibrary
     else:
         # most likely Linux with linux-gpib
-        libnames = [filename] if filename else ['libgpib.so.0', 'gpib-32.so']
+        libnames = [filename] if filename else ['libgpib.so.0', 'gpib-32.so','macosx_gpib_lib_1.0.3a.dylib']
         loader = ctypes.cdll.LoadLibrary
 
     for libname in libnames:
@@ -86,7 +86,10 @@ def _load_lib(filename=None):
                     ctypes.c_long], ctypes.c_int),
         ("ibwrt", [ctypes.c_int, ctypes.c_char_p, ctypes.c_long], ctypes.c_int),
         ("iblines", [ctypes.c_int, ctypes.POINTER(
-            ctypes.c_short)], ctypes.c_int)
+            ctypes.c_short)], ctypes.c_int),
+        ("ibcac", [ctypes.c_int, ctypes.c_int], ctypes.c_int),
+        ("ibgts", [ctypes.c_int, ctypes.c_int], ctypes.c_int),
+        ("ibpct", [ctypes.c_int], ctypes.c_int),
     ):
         libfunction = _lib[name]
         libfunction.argtypes = argtypes
@@ -362,6 +365,52 @@ def ibsta():
 
     return _lib.getibsta()
 
+def ibcac(handle, sync):
+    """Assert ATN by calling ibcac
+
+    Args:
+        handle (int): board handle
+        sync (int): synchronous handshake
+
+    Returns:
+        int: ibsta value
+
+    """
+    sta = _lib.ibcac(handle, stat)
+    if sta & ERR:
+        raise GpibError("ibcac")
+    return sta
+
+def ibgts(handle, shadow):
+    """Deassert ATN by calling ibgts
+
+    Args:
+        handle (int): board handle
+        shadow (int): shadow handshake
+
+    Returns:
+        int: ibsta value
+
+    """
+    sta = _lib.ibgts(handle, stat)
+    if sta & ERR:
+        raise GpibError("ibgts")
+    return sta
+
+def ibpct(handle):
+    """Pass control to device with handle
+
+    Args:
+        handle (int): board handle
+
+    Returns:
+        int: ibsta value
+
+    """
+    sta = _lib.ibpct(handle, stat)
+    if sta & ERR:
+        raise GpibError("ibpct")
+    return sta
 
 def interface_clear(handle):
     """Clear interface by calling ibsic.
